@@ -23,6 +23,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+        "displayName": "Truck Track"
+      },
       "package": "com.jennymamtl.trucktrack"
     },
     "web": {

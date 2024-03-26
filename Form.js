@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Switch, Button, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TextInput, Switch, Button, StyleSheet, ScrollView, Alert, Image } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 
@@ -19,6 +20,7 @@ const MyForm = () => {
   const [waitingTimeHours, setWaitingTimeHours] = useState('');
   const [startKm, setStartKm] = useState('');
   const [endKm, setEndKm] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const ratePerMile = 0.63;
   const layoverRate = 85;
@@ -53,6 +55,36 @@ const MyForm = () => {
   const handleSubmit = () => {
     // Handle form submission here
     console.log('Form submitted!');
+  };
+
+  const pickImage = async () => {
+    console.log('Attempting to pick an image...');
+  let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  console.log('Permission result:', permissionResult);
+  if (!permissionResult.granted) {
+    alert('Permission to access camera roll is required!');
+    return;
+  }
+
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: false,
+    quality: 1,
+  });
+
+  console.log('Image picker result:', result);
+
+  if (!result.cancelled && result.assets.length > 0) {
+    console.log('Image selected:', result.assets[0].uri);
+    setSelectedImage(result.assets[0].uri);
+  } else {
+    console.log('Image selection cancelled.');
+  }
+
+    
+  };
+  const removeImage = () => {
+    setSelectedImage(null);
   };
 
   const earningsData = calculateEarnings();
@@ -178,6 +210,13 @@ const MyForm = () => {
         
         
       </View>
+      <Button title="Pick an image" onPress={pickImage} />
+      {selectedImage ? (
+        <View style={{ alignItems: 'center' }}>
+          <Image source={{ uri: selectedImage }} style={{ width: 200, height: 200 }} />
+          <Button title="Remove Image" onPress={removeImage} />
+        </View>
+      ) : null}
       <Button title="Generate PDF & Share" onPress={generatePDF} />
     </View>
     </ScrollView>

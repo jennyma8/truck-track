@@ -31,17 +31,22 @@
         "foregroundImage": "./assets/semi_truck.jpeg",
         "backgroundColor": "#ffffff"
       },
-        "displayName": "TruckTrack"
-      },
+      "displayName": "TruckTrack",
       "package": "com.jennymamtl.trucktrack"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
+    "package": "com.jennymamtl.trucktrack",
     "extra": {
       "eas": {
         "projectId": "152e57f4-8a9c-430f-b2c8-97412ee11a9f"
       }
     }
+  },
+  "web": {
+    "favicon": "./assets/favicon.png"
+  },
+  "extra": {
+    "eas": {
+      "projectId": "152e57f4-8a9c-430f-b2c8-97412ee11a9f"
+    }
   }
-
+}

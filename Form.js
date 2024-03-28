@@ -2,12 +2,17 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import { getPriority } from 'os';
 
 //cd truck-track
 //npx expo start//
 
+//git
+//git add .
+//git commit -m "blabla"
+//git push origin main
+
 //add invoice # (truck number + driver name + trailer# + date)
-//email to dispatch + driver
 
 const MyForm = () => {
   const [companyName, setCompanyName] = useState('AME Solution Inc.');
@@ -25,7 +30,7 @@ const MyForm = () => {
   const [pickups, setPickups] = useState([{ pickupFrom: '' }]);
  
 
-  const ratePerMile = 0.63;
+  const ratePerMile = 0.61;
   const layoverRate = 85;
   const pickupDropRate = 150;
   const waitingTimeRate = 20;
@@ -86,7 +91,7 @@ const MyForm = () => {
         <p>Layover: ${layoverHours}</p>
         <p>Pickup/Drop: ${pickupDropCount}</p>
         <p>Waiting Time (Hours): ${waitingTimeHours}</p>
-        <p>Vehicle odometer<p>
+        <b>Vehicle odometer:<b>
         <p>Start (km): ${startKm}</p>
         <p>End (km): ${endKm}</p>
         <p>Km Driven: ${earningsKm} = Miles driven: ${earningsMiles.toFixed(2)} </p>
@@ -213,14 +218,14 @@ const MyForm = () => {
         />
       </View>
       <View style={styles.table}>
-        <Text style={styles.label}>Rate per Mile: $0.63</Text>
-        <Text style={styles.label}>Earnings:</Text>
+        <Text style={styles.label}>Rate per Mile: $0.61</Text>
+        <Text style={styles.label}>Earnings: $</Text>
         <Text>{earningsData.earnings}</Text>
-        <Text style={styles.label}>GST:</Text>
+        <Text style={styles.label}>GST: $</Text>
         <Text>{earningsData.gst}</Text>
-        <Text style={styles.label}>QST:</Text>
+        <Text style={styles.label}>QST: $</Text>
         <Text>{earningsData.qst}</Text>
-        <Text style={styles.label}>Total Earnings:</Text>
+        <Text style={styles.label}>Total Earnings: $</Text>
         <Text>{earningsData.total}</Text>
       </View>
       <Button title="Generate PDF & Share" onPress={generatePDF} />

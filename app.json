@@ -28,7 +28,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/semi_truck.jpeg",
+        "foregroundImage": "./assets/semi_truck.png",
         "backgroundColor": "#ffffff"
       },
       "displayName": "TruckTrack",

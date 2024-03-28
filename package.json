@@ -10,14 +10,17 @@
   },
   "dependencies": {
     "expo": "~50.0.14",
-    "expo-status-bar": "~1.11.1",
-    "node": "^21.7.1",
-    "react": "18.2.0",
-    "react-native": "0.73.6",
+    "expo-document-picker": "^11.10.1",
+    "expo-file-system": "~16.0.8",
+    "expo-image-picker": "~14.7.1",
+    "expo-mail-composer": "^12.7.1",
     "expo-print": "~12.8.1",
     "expo-sharing": "~11.10.0",
+    "expo-status-bar": "~1.11.1",
     "expo-updates": "~0.24.12",
-    "expo-image-picker": "~14.7.1"
+    "node": "^21.7.1",
+    "react": "18.2.0",
+    "react-native": "0.73.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

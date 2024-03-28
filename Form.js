@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Switch, Button, StyleSheet, ScrollView, Alert, Image } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 
 //cd truck-track
-//npx expo//
+//npx expo start//
 
 //add invoice # (truck number + driver name + trailer# + date)
 //email to dispatch + driver
@@ -14,13 +13,17 @@ const MyForm = () => {
   const [companyName, setCompanyName] = useState('AME Solution Inc.');
   const [driverName, setDriverName] = useState('Ezzat Abou-Al-Mouna');
   const [gstHstNumber, setGstHstNumber] = useState('744456302RT0001');
-  const [trip, setTrip] = useState('');
+  const [email, setEmail] = useState('lee-99@hotmail.com');
+  const [phone, setPhone] = useState('514-816-3122');
   const [layoverHours, setLayoverHours] = useState('');
   const [pickupDropCount, setPickupDropCount] = useState('');
   const [waitingTimeHours, setWaitingTimeHours] = useState('');
   const [startKm, setStartKm] = useState('');
-  const [endKm, setEndKm] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [endKm, setEndKm] = useState(''); 
+  const [gpsMilesDriven, setGpsMilesDriven] = useState('');
+  const [locations, setLocations] = useState([{ deliverTo: '' }]);
+  const [pickups, setPickups] = useState([{ pickupFrom: '' }]);
+ 
 
   const ratePerMile = 0.63;
   const layoverRate = 85;
@@ -31,16 +34,20 @@ const MyForm = () => {
   const earningsKm = parseInt(endKm) - parseInt(startKm);
   const earningsMiles = earningsKm * 0.621371;
 
-  const calculateEarnings = () => {
-    
-    const earnings = earningsMiles * ratePerMile;
+  const addLocation = () => {
+    setLocations([...locations, { deliverTo: '' }]);
+  };
 
+  const addPickup = () => {
+    setPickups([...pickups, { pickupFrom: '' }]);
+  };
+
+  const calculateEarnings = () => {
+    const earnings = earningsMiles * ratePerMile;
     const layoverEarnings = layoverHours * layoverRate;
     const pickupDropEarnings = pickupDropCount * pickupDropRate;
     const waitingTimeEarnings = waitingTimeHours * waitingTimeRate;
-
     const totalEarnings = earnings + layoverEarnings + pickupDropEarnings + waitingTimeEarnings;
-
     const gstAmount = totalEarnings * gstRate;
     const qstAmount = totalEarnings * qstRate;
 
@@ -52,72 +59,50 @@ const MyForm = () => {
     };
   };
 
-  const handleSubmit = () => {
-    // Handle form submission here
-    console.log('Form submitted!');
-  };
-
-  const pickImage = async () => {
-    console.log('Attempting to pick an image...');
-  let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  console.log('Permission result:', permissionResult);
-  if (!permissionResult.granted) {
-    alert('Permission to access camera roll is required!');
-    return;
-  }
-
-  let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: false,
-    quality: 1,
-  });
-
-  console.log('Image picker result:', result);
-
-  if (!result.cancelled && result.assets.length > 0) {
-    console.log('Image selected:', result.assets[0].uri);
-    setSelectedImage(result.assets[0].uri);
-  } else {
-    console.log('Image selection cancelled.');
-  }
-
-    
-  };
-  const removeImage = () => {
-    setSelectedImage(null);
-  };
-
   const earningsData = calculateEarnings();
 
   const generatePDF = async () => {
     try {
+      let deliverToContent = '';
+    locations.forEach((location, index) => {
+      deliverToContent += `<p>Deliver to ${index + 1}: ${location.deliverTo}</p>`;
+    });
+
+    let pickupContent = '';
+    pickups.forEach((pickup, index) => {
+      pickupContent += `<p>Pickup ${index + 1}: ${pickup.pickupFrom}</p>`;
+    });
+
       const htmlContent = `
         <h1>Time Sheet</h1>
         <p>Company Name: ${companyName}</p>
         <p>Driver Name: ${driverName}</p>
+        <p>Email: ${email}</p>
+        <p>Phone: ${phone}</p>
         <p>GST/HST #: ${gstHstNumber}</p>
         <p>Rate per Mile: $0.63</p>
+        <p>${deliverToContent}<p>
+        <p>${pickupContent}</p>
         <p>Layover: ${layoverHours}</p>
         <p>Pickup/Drop: ${pickupDropCount}</p>
         <p>Waiting Time (Hours): ${waitingTimeHours}</p>
-        <p>Trip #: ${trip}</p>
+        <p>Vehicle odometer<p>
         <p>Start (km): ${startKm}</p>
         <p>End (km): ${endKm}</p>
-        <p>Miles:${earningsMiles} </p>
+        <p>Km Driven: ${earningsKm} = Miles driven: ${earningsMiles.toFixed(2)} </p>
+        <p>GPS Total Miles Driven: ${gpsMilesDriven}</p>
         <p>Earnings: ${earningsData.earnings}</p>
         <p>GST: ${earningsData.gst}</p>
         <p>QST: ${earningsData.qst}</p>
         <p>Total Earnings: ${earningsData.total}</p>
       `;
       const { uri } = await Print.printToFileAsync({ html: htmlContent });
-
       await Sharing.shareAsync(uri);
     } catch (error) {
       console.error('Error generating PDF:', error);
       Alert.alert('Error', 'Failed to generate PDF. Please try again later.');
     }
   };
-
   return (
     <ScrollView>
     <View style={styles.container}>
@@ -136,16 +121,23 @@ const MyForm = () => {
         />
         <TextInput
           style={styles.input}
+          placeholder="email"
+          value={email}
+          onChangeText={text => setEmail(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Phone"
+          value={phone}
+          onChangeText={text => setPhone(text)}
+        />
+        <TextInput
+          style={styles.input}
           placeholder="GST/HST #"
           value={gstHstNumber}
           onChangeText={text => setGstHstNumber(text)}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Trip #"
-          value={trip}
-          onChangeText={text => setTrip(text)}
-        />
+        <Text>Vehicle odometer</Text>
         <TextInput
           style={styles.input}
           placeholder="Start (km)"
@@ -160,6 +152,44 @@ const MyForm = () => {
           onChangeText={text => setEndKm(text)}
           keyboardType="numeric"
         />
+        <Text>Miles Driven: {earningsMiles.toFixed(2)}</Text>
+        <Text>GPS total miles driven</Text>
+        <TextInput
+          style={styles.input}
+          value={gpsMilesDriven}
+          onChangeText={text => setGpsMilesDriven(text)}
+          keyboardType="numeric"
+        />
+        {locations.map((location, index) => (
+            <TextInput
+              key={index}
+              style={styles.input}
+              placeholder={`Deliver to ${index + 1}`}
+              value={location.deliverTo}
+              onChangeText={text => {
+                const newLocations = [...locations];
+                newLocations[index].deliverTo = text;
+                setLocations(newLocations);
+              }}
+            />
+          ))}
+          <Button title="+" onPress={addLocation} />
+          {pickups.map((pickup, index) => (
+    <View key={index}>
+      <TextInput
+        style={styles.input}
+        placeholder={`Pickup From ${index + 1}`}
+        value={pickup.pickupFrom}
+        onChangeText={text => {
+          const newPickups = [...pickups];
+          newPickups[index].pickupFrom = text;
+          setPickups(newPickups);
+        }}
+      />
+
+    </View>
+  ))}
+  <Button title="+" onPress={addPickup} />
         <TextInput
           style={styles.input}
           placeholder="Layover"
@@ -181,24 +211,9 @@ const MyForm = () => {
           onChangeText={text => setWaitingTimeHours(text)}
           keyboardType="numeric"
         />
-        <Button title="Calculate" onPress={handleSubmit} />
       </View>
       <View style={styles.table}>
-      <Text style={styles.label}>Company Name: </Text>
-      <Text>{companyName}</Text>
-        <Text style={styles.label}>Driver Name: </Text>
-        <Text>{driverName}</Text>
-        <Text style={styles.label}>GST/HST #: </Text>
-        <Text>{gstHstNumber}</Text>
         <Text style={styles.label}>Rate per Mile: $0.63</Text>
-        <Text style={styles.label}>Layover: {layoverHours}</Text>
-        <Text style={styles.label}>Pickup/Drop: {pickupDropCount}</Text>
-        <Text style={styles.label}>Waiting Time (Hours): {waitingTimeHours}</Text>
-        <Text style={styles.label}>Trip #: {trip}</Text>
-        <Text style={styles.label}>Start (km): {startKm}</Text>
-        <Text style={styles.label}>End (km): {endKm}</Text>
-        <Text style={styles.label}>Miles: </Text>
-        <Text>{earningsMiles}</Text>
         <Text style={styles.label}>Earnings:</Text>
         <Text>{earningsData.earnings}</Text>
         <Text style={styles.label}>GST:</Text>
@@ -207,16 +222,7 @@ const MyForm = () => {
         <Text>{earningsData.qst}</Text>
         <Text style={styles.label}>Total Earnings:</Text>
         <Text>{earningsData.total}</Text>
-        
-        
       </View>
-      <Button title="Pick an image" onPress={pickImage} />
-      {selectedImage ? (
-        <View style={{ alignItems: 'center' }}>
-          <Image source={{ uri: selectedImage }} style={{ width: 200, height: 200 }} />
-          <Button title="Remove Image" onPress={removeImage} />
-        </View>
-      ) : null}
       <Button title="Generate PDF & Share" onPress={generatePDF} />
     </View>
     </ScrollView>

@@ -1,7 +1,9 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, ScrollView } from 'react-native';
 
-const Profile = () => {
+
+const Profile = ({navigation}) => {
   // Define state variables for user information
   const [companyName, setCompanyName] = useState('');
   const [driverName, setDriverName] = useState('');
@@ -9,12 +11,31 @@ const Profile = () => {
   const [phone, setPhone] = useState('');
   const [gstHstNumber, setGstHstNumber] = useState('');
 
+  const goToForm = () => {
+    navigation.navigate('Form');
+  };
   // Function to save user profile
-  const saveProfile = () => {
-    // Save user profile to local storage or backend server
-    // You can use AsyncStorage or any other storage mechanism
-    // For simplicity, I'm just logging the user information here
-    console.log('Saving profile:', { companyName, driverName, email, phone, gstHstNumber });
+  const saveProfile = async () => {
+    try {
+      // Construct the user profile object
+      const userProfile = {
+        companyName,
+        driverName,
+        email,
+        phone,
+        gstHstNumber,
+      };
+  
+      // Convert the user profile object to a JSON string
+      const userProfileJSON = JSON.stringify(userProfile);
+  
+      // Save the user profile to AsyncStorage
+      await AsyncStorage.setItem('userProfile', userProfileJSON);
+  
+      console.log('User profile saved successfully:', userProfile);
+    } catch (error) {
+      console.error('Error saving user profile:', error);
+    }
   };
 
   return (
@@ -53,6 +74,7 @@ const Profile = () => {
         onChangeText={text => setGstHstNumber(text)}
       />
       <Button title="Save Profile" onPress={saveProfile} />
+      <Button title="Go to Form" onPress={goToForm} />
     </View></ScrollView>
   );
 };

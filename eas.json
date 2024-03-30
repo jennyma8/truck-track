@@ -1,3 +1,5 @@
+//eas build --profile preview
+
 {
   "cli": {
     "version": ">= 7.6.0"

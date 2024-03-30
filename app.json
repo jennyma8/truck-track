@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "truck-track",
+    "name": "TruckTrack",
     "slug": "truck-track",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -31,10 +31,8 @@
         "foregroundImage": "./assets/semi_truck.png",
         "backgroundColor": "#ffffff"
       },
-      "displayName": "TruckTrack",
       "package": "com.jennymamtl.trucktrack"
     },
-    "package": "com.jennymamtl.trucktrack",
     "extra": {
       "eas": {
         "projectId": "152e57f4-8a9c-430f-b2c8-97412ee11a9f"

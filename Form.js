@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
-import { getPriority } from 'os';
 
 //cd truck-track
 //npx expo start//
@@ -14,17 +13,12 @@ import { getPriority } from 'os';
 
 //add invoice # (truck number + driver name + trailer# + date)
 
-const MyForm = () => {
-  const [companyName, setCompanyName] = useState('AME Solution Inc.');
-  const [driverName, setDriverName] = useState('Ezzat Abou-Al-Mouna');
-  const [gstHstNumber, setGstHstNumber] = useState('744456302RT0001');
-  const [email, setEmail] = useState('lee-99@hotmail.com');
-  const [phone, setPhone] = useState('514-816-3122');
+const Form = ({ companyName, driverName, email, phone, gstHstNumber, navigation }) => {
   const [layoverHours, setLayoverHours] = useState('');
   const [pickupDropCount, setPickupDropCount] = useState('');
   const [waitingTimeHours, setWaitingTimeHours] = useState('');
   const [startKm, setStartKm] = useState('');
-  const [endKm, setEndKm] = useState(''); 
+  const [endKm, setEndKm] = useState('');
   const [gpsMilesDriven, setGpsMilesDriven] = useState('');
   const [locations, setLocations] = useState([{ deliverTo: '' }]);
   const [pickups, setPickups] = useState([{ pickupFrom: '' }]);
@@ -38,6 +32,10 @@ const MyForm = () => {
   const qstRate = 0.09975;
   const earningsKm = parseInt(endKm) - parseInt(startKm);
   const earningsMiles = earningsKm * 0.621371;
+
+  const goToProfile = () => {
+    navigation.navigate('Profile');
+  };
 
   const addLocation = () => {
     setLocations([...locations, { deliverTo: '' }]);
@@ -109,39 +107,44 @@ const MyForm = () => {
     }
   };
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.scrollContent}>
     <View style={styles.container}>
       <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          placeholder="Company Name"
-          value={companyName}
-          onChangeText={text => setCompanyName(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Driver Name"
-          value={driverName}
-          onChangeText={text => setDriverName(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="email"
-          value={email}
-          onChangeText={text => setEmail(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Phone"
-          value={phone}
-          onChangeText={text => setPhone(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="GST/HST #"
-          value={gstHstNumber}
-          onChangeText={text => setGstHstNumber(text)}
-        />
+      <TextInput
+            style={styles.input}
+            placeholder="Company Name"
+            value={companyName}
+            onChangeText={text => setCompanyName(text)}
+            editable={false} // Make this field non-editable
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Driver Name"
+            value={driverName}
+            onChangeText={text => setDriverName(text)}
+            editable={false} // Make this field non-editable
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={text => setEmail(text)}
+            editable={false} // Make this field non-editable
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Phone"
+            value={phone}
+            onChangeText={text => setPhone(text)}
+            editable={false} // Make this field non-editable
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="GST/HST #"
+            value={gstHstNumber}
+            onChangeText={text => setGstHstNumber(text)}
+            editable={false} // Make this field non-editable
+          />
         <Text>Vehicle odometer</Text>
         <TextInput
           style={styles.input}
@@ -229,6 +232,7 @@ const MyForm = () => {
         <Text>{earningsData.total}</Text>
       </View>
       <Button title="Generate PDF & Share" onPress={generatePDF} />
+      <Button title="Go to Profile" onPress={goToProfile} />
     </View>
     </ScrollView>
   );
@@ -261,4 +265,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyForm;
+export default Form;

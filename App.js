@@ -1,35 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import * as Updates from 'expo-updates';
-import MyForm from './Form';
-
 //cd truck-track
 //npx expo start
 
 //expo updates automatic
 //https://docs.expo.dev/versions/latest/sdk/updates/
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import Form from './Form';
+import Profile from './Profile';
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  // async function onFetchUpdateAsync() {
-  //   try {
-  //     const update = await Updates.checkForUpdateAsync();
-
-  //     if (update.isAvailable) {
-  //       await Updates.fetchUpdateAsync();
-  //       await Updates.reloadAsync();
-  //     }
-  //   } catch (error) {
-  //     // You can also add an alert() to see the error message in case of an error when fetching updates.
-  //     alert(`Error fetching latest Expo update: ${error}`);
-  //   }
-  // }
   return (
-    <View style={styles.container}>
-      {/* <Button title="Fetch update" onPress={onFetchUpdateAsync} /> */}
-      <Text></Text>
-      <StatusBar style="auto" />
-      <MyForm />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Form" component={Form} />
+        <Stack.Screen name="Profile" component={Profile} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

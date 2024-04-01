@@ -20,9 +20,9 @@ export default function App() {
   
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-      {/* <Stack.Screen name="Signup" component={Signup} /> */}
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Form" component={Form} />
         <Stack.Screen name="Profile" component={Profile} />
       </Stack.Navigator>

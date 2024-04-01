@@ -13,7 +13,14 @@ import * as Sharing from 'expo-sharing';
 
 //add invoice # (truck number + driver name + trailer# + date)
 
-const Form = ({ companyName, driverName, email, phone, gstHstNumber, navigation }) => {
+const Form = ({ navigation, route, username }) => {
+  const { formData } = route.params;
+
+  const [companyName, setCompanyName] = useState(formData?.companyName || '');
+  const [driverName, setDriverName] = useState(formData?.driverName || '');
+  const [email, setEmail] = useState(formData?.email || '');
+  const [phone, setPhone] = useState(formData?.phone || '');
+  const [gstHstNumber, setGstHstNumber] = useState(formData?.gstHstNumber || '');
   const [layoverHours, setLayoverHours] = useState('');
   const [pickupDropCount, setPickupDropCount] = useState('');
   const [waitingTimeHours, setWaitingTimeHours] = useState('');
@@ -22,6 +29,7 @@ const Form = ({ companyName, driverName, email, phone, gstHstNumber, navigation 
   const [gpsMilesDriven, setGpsMilesDriven] = useState('');
   const [locations, setLocations] = useState([{ deliverTo: '' }]);
   const [pickups, setPickups] = useState([{ pickupFrom: '' }]);
+
  
 
   const ratePerMile = 0.61;
@@ -34,7 +42,7 @@ const Form = ({ companyName, driverName, email, phone, gstHstNumber, navigation 
   const earningsMiles = earningsKm * 0.621371;
 
   const goToProfile = () => {
-    navigation.navigate('Profile');
+    navigation.navigate('Profile', { username });
   };
 
   const addLocation = () => {

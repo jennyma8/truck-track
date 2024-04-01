@@ -6,24 +6,25 @@ const Signup = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignUp = async () => {
-    // Perform validation (e.g., check if username and password are not empty)
+  const handleSignup = async () => {
+    // Perform validation
     if (!username || !password) {
       Alert.alert('Error', 'Please enter both username and password.');
       return;
     }
 
     try {
-      // Check if the user already exists by retrieving the password associated with the username
-      const existingPassword = await AsyncStorage.getItem(username);
-
-      if (existingPassword) {
-        Alert.alert('Error', 'User already exists. Please choose a different username.');
+      // Check if username already exists
+      const existingUser = await AsyncStorage.getItem(username);
+      if (existingUser) {
+        Alert.alert('Error', 'Username already exists. Please choose a different username.');
         return;
       }
 
-      // If the user does not exist, store the new user data
-      await AsyncStorage.setItem(username, password);
+      // Save user data to AsyncStorage
+      const userData = { username, password };
+      await AsyncStorage.setItem(username, JSON.stringify(userData));
+
       Alert.alert('Success', 'Account created successfully. You can now log in.');
       navigation.navigate('Login');
     } catch (error) {
@@ -47,7 +48,7 @@ const Signup = ({ navigation }) => {
         onChangeText={text => setPassword(text)}
         secureTextEntry={true}
       />
-      <Button title="Sign Up" onPress={handleSignUp} />
+      <Button title="Sign Up" onPress={handleSignup} />
     </View>
   );
 };

@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, ScrollView } from 'react-native';
 
-const Profile = ({ navigation, route }) => {
-  const { username } = route.params;
+const Profile = ({ navigation}) => {
+  
 
   // Define state variables for user information
   const [companyName, setCompanyName] = useState('');
@@ -43,7 +43,7 @@ const Profile = ({ navigation, route }) => {
   };
 
   // Function to save user profile
-  const saveProfile = async () => {
+  const saveProfile = async (username) => {
     try {
       // Construct the user profile object
       const userProfileData = {
@@ -55,10 +55,14 @@ const Profile = ({ navigation, route }) => {
       };
 
       // Convert the user profile object to a JSON string
-      const userProfileJSON = JSON.stringify(userProfileData);
+    const userProfileJSON = JSON.stringify(userProfileData);
 
-      // Save the user profile to AsyncStorage
-      await AsyncStorage.setItem('userProfile', userProfileJSON);
+    // Construct the AsyncStorage key with the username
+    const userProfileKey = `userProfile_${username}`;
+
+    // Save the user profile to AsyncStorage using the constructed key
+    await AsyncStorage.setItem(userProfileKey, userProfileJSON);
+
 
       console.log('User profile saved successfully:', userProfileData);
       setUserProfile(userProfileData); // Update userProfile state
@@ -68,7 +72,7 @@ const Profile = ({ navigation, route }) => {
   };
 
   const goToForm = () => {
-    navigation.navigate('Form', { formData: userProfile });
+    navigation.navigate('Form', { userProfile });
   };
 
   return (

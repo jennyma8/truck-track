@@ -14,13 +14,15 @@ import * as Sharing from 'expo-sharing';
 //add invoice # (truck number + driver name + trailer# + date)
 
 const Form = ({ navigation, route, username }) => {
-  const { formData } = route.params;
 
-  const [companyName, setCompanyName] = useState(formData?.companyName || '');
-  const [driverName, setDriverName] = useState(formData?.driverName || '');
-  const [email, setEmail] = useState(formData?.email || '');
-  const [phone, setPhone] = useState(formData?.phone || '');
-  const [gstHstNumber, setGstHstNumber] = useState(formData?.gstHstNumber || '');
+  const { userProfile } = route.params;
+
+  // Initialize form state with userProfile data
+  const [companyName, setCompanyName] = useState(userProfile?.companyName || '');
+  const [driverName, setDriverName] = useState(userProfile?.driverName || '');
+  const [email, setEmail] = useState(userProfile?.email || '');
+  const [phone, setPhone] = useState(userProfile?.phone || '');
+  const [gstHstNumber, setGstHstNumber] = useState(userProfile?.gstHstNumber || '');
   const [layoverHours, setLayoverHours] = useState('');
   const [pickupDropCount, setPickupDropCount] = useState('');
   const [waitingTimeHours, setWaitingTimeHours] = useState('');

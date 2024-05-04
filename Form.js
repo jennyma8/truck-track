@@ -1,28 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 
-//cd truck-track
-//npx expo start//
+const Form = () => {
+  const [companyName, setCompanyName] = useState('');
+  const [driverName, setDriverName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [gstHstNumber, setGstHstNumber] = useState('');
 
-//git
-//git add .
-//git commit -m "blabla"
-//git push origin main
-
-//add invoice # (truck number + driver name + trailer# + date)
-
-const Form = ({ navigation, route, username }) => {
-
-  const { userProfile } = route.params;
-
-  // Initialize form state with userProfile data
-  const [companyName, setCompanyName] = useState(userProfile?.companyName || '');
-  const [driverName, setDriverName] = useState(userProfile?.driverName || '');
-  const [email, setEmail] = useState(userProfile?.email || '');
-  const [phone, setPhone] = useState(userProfile?.phone || '');
-  const [gstHstNumber, setGstHstNumber] = useState(userProfile?.gstHstNumber || '');
   const [layoverHours, setLayoverHours] = useState('');
   const [pickupDropCount, setPickupDropCount] = useState('');
   const [waitingTimeHours, setWaitingTimeHours] = useState('');
@@ -32,8 +19,6 @@ const Form = ({ navigation, route, username }) => {
   const [locations, setLocations] = useState([{ deliverTo: '' }]);
   const [pickups, setPickups] = useState([{ pickupFrom: '' }]);
 
- 
-
   const ratePerMile = 0.61;
   const layoverRate = 85;
   const pickupDropRate = 150;
@@ -42,10 +27,6 @@ const Form = ({ navigation, route, username }) => {
   const qstRate = 0.09975;
   const earningsKm = parseInt(endKm) - parseInt(startKm);
   const earningsMiles = earningsKm * 0.621371;
-
-  const goToProfile = () => {
-    navigation.navigate('Profile', { username });
-  };
 
   const addLocation = () => {
     setLocations([...locations, { deliverTo: '' }]);
@@ -77,14 +58,14 @@ const Form = ({ navigation, route, username }) => {
   const generatePDF = async () => {
     try {
       let deliverToContent = '';
-    locations.forEach((location, index) => {
-      deliverToContent += `<p>Deliver to ${index + 1}: ${location.deliverTo}</p>`;
-    });
+      locations.forEach((location, index) => {
+        deliverToContent += `<p>Deliver to ${index + 1}: ${location.deliverTo}</p>`;
+      });
 
-    let pickupContent = '';
-    pickups.forEach((pickup, index) => {
-      pickupContent += `<p>Pickup ${index + 1}: ${pickup.pickupFrom}</p>`;
-    });
+      let pickupContent = '';
+      pickups.forEach((pickup, index) => {
+        pickupContent += `<p>Pickup ${index + 1}: ${pickup.pickupFrom}</p>`;
+      });
 
       const htmlContent = `
         <h1>Time Sheet</h1>
@@ -116,69 +97,70 @@ const Form = ({ navigation, route, username }) => {
       Alert.alert('Error', 'Failed to generate PDF. Please try again later.');
     }
   };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
-    <View style={styles.container}>
-      <View style={styles.form}>
-      <TextInput
+      <View style={styles.container}>
+        <View style={styles.form}>
+          <TextInput
             style={styles.input}
             placeholder="Company Name"
             value={companyName}
             onChangeText={text => setCompanyName(text)}
-            editable={false} // Make this field non-editable
+            
           />
           <TextInput
             style={styles.input}
             placeholder="Driver Name"
             value={driverName}
             onChangeText={text => setDriverName(text)}
-            editable={false} // Make this field non-editable
+          
           />
           <TextInput
             style={styles.input}
             placeholder="Email"
             value={email}
             onChangeText={text => setEmail(text)}
-            editable={false} // Make this field non-editable
+           
           />
           <TextInput
             style={styles.input}
             placeholder="Phone"
             value={phone}
             onChangeText={text => setPhone(text)}
-            editable={false} // Make this field non-editable
+          
           />
           <TextInput
             style={styles.input}
             placeholder="GST/HST #"
             value={gstHstNumber}
             onChangeText={text => setGstHstNumber(text)}
-            editable={false} // Make this field non-editable
+        
           />
-        <Text>Vehicle odometer</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Start (km)"
-          value={startKm}
-          onChangeText={text => setStartKm(text)}
-          keyboardType="numeric"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="End (km)"
-          value={endKm}
-          onChangeText={text => setEndKm(text)}
-          keyboardType="numeric"
-        />
-        <Text>Miles Driven: {earningsMiles.toFixed(2)}</Text>
-        <Text>GPS total miles driven</Text>
-        <TextInput
-          style={styles.input}
-          value={gpsMilesDriven}
-          onChangeText={text => setGpsMilesDriven(text)}
-          keyboardType="numeric"
-        />
-        {locations.map((location, index) => (
+          <Text>Vehicle odometer</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Start (km)"
+            value={startKm}
+            onChangeText={text => setStartKm(text)}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="End (km)"
+            value={endKm}
+            onChangeText={text => setEndKm(text)}
+            keyboardType="numeric"
+          />
+          <Text>Miles Driven: {earningsMiles.toFixed(2)}</Text>
+          <Text>GPS total miles driven</Text>
+          <TextInput
+            style={styles.input}
+            value={gpsMilesDriven}
+            onChangeText={text => setGpsMilesDriven(text)}
+            keyboardType="numeric"
+          />
+          {locations.map((location, index) => (
             <TextInput
               key={index}
               style={styles.input}
@@ -193,57 +175,55 @@ const Form = ({ navigation, route, username }) => {
           ))}
           <Button title="+" onPress={addLocation} />
           {pickups.map((pickup, index) => (
-    <View key={index}>
-      <TextInput
-        style={styles.input}
-        placeholder={`Pickup From ${index + 1}`}
-        value={pickup.pickupFrom}
-        onChangeText={text => {
-          const newPickups = [...pickups];
-          newPickups[index].pickupFrom = text;
-          setPickups(newPickups);
-        }}
-      />
-
-    </View>
-  ))}
-  <Button title="+" onPress={addPickup} />
-        <TextInput
-          style={styles.input}
-          placeholder="Layover"
-          value={layoverHours}
-          onChangeText={text => setLayoverHours(text)}
-          keyboardType="numeric"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Pickup/Drop"
-          value={pickupDropCount}
-          onChangeText={text => setPickupDropCount(text)}
-          keyboardType="numeric"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Waiting Time (hours)"
-          value={waitingTimeHours}
-          onChangeText={text => setWaitingTimeHours(text)}
-          keyboardType="numeric"
-        />
+            <View key={index}>
+              <TextInput
+                style={styles.input}
+                placeholder={`Pickup From ${index + 1}`}
+                value={pickup.pickupFrom}
+                onChangeText={text => {
+                  const newPickups = [...pickups];
+                  newPickups[index].pickupFrom = text;
+                  setPickups(newPickups);
+                }}
+              />
+            </View>
+          ))}
+          <Button title="+" onPress={addPickup} />
+          <TextInput
+            style={styles.input}
+            placeholder="Layover"
+            value={layoverHours}
+            onChangeText={text => setLayoverHours(text)}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Pickup/Drop"
+            value={pickupDropCount}
+            onChangeText={text => setPickupDropCount(text)}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Waiting Time (hours)"
+            value={waitingTimeHours}
+            onChangeText={text => setWaitingTimeHours(text)}
+            keyboardType="numeric"
+          />
+        </View>
+        <View style={styles.table}>
+          <Text style={styles.label}>Rate per Mile: $0.61</Text>
+          <Text style={styles.label}>Earnings: $</Text>
+          <Text>{earningsData.earnings}</Text>
+          <Text style={styles.label}>GST: $</Text>
+          <Text>{earningsData.gst}</Text>
+          <Text style={styles.label}>QST: $</Text>
+          <Text>{earningsData.qst}</Text>
+          <Text style={styles.label}>Total Earnings: $</Text>
+          <Text>{earningsData.total}</Text>
+        </View>
+        <Button title="Generate PDF & Share" onPress={generatePDF} />
       </View>
-      <View style={styles.table}>
-        <Text style={styles.label}>Rate per Mile: $0.61</Text>
-        <Text style={styles.label}>Earnings: $</Text>
-        <Text>{earningsData.earnings}</Text>
-        <Text style={styles.label}>GST: $</Text>
-        <Text>{earningsData.gst}</Text>
-        <Text style={styles.label}>QST: $</Text>
-        <Text>{earningsData.qst}</Text>
-        <Text style={styles.label}>Total Earnings: $</Text>
-        <Text>{earningsData.total}</Text>
-      </View>
-      <Button title="Generate PDF & Share" onPress={generatePDF} />
-      <Button title="Go to Profile" onPress={goToProfile} />
-    </View>
     </ScrollView>
   );
 };

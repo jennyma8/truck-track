@@ -1,10 +1,10 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 
-const Form = ({navigation}) => {
+const Form = () => {
   const [companyName, setCompanyName] = useState('');
   const [driverName, setDriverName] = useState('');
   const [email, setEmail] = useState('');
@@ -41,7 +41,7 @@ const Form = ({navigation}) => {
       await AsyncStorage.setItem('driverName', driverName);
       await AsyncStorage.setItem('email', email);
       await AsyncStorage.setItem('phone', phone);
-      await AsyncStorage.setItam('gstHstNumber', gstHstNumber);
+      await AsyncStorage.setItem('gstHstNumber', gstHstNumber);
     } catch (error) {
       console.error('Error saving data:', error);
       Alert.alert('Error', 'Failed to save data. Please try again later.');

@@ -1,9 +1,10 @@
 import React, { useState} from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 
-const Form = () => {
+const Form = ({navigation}) => {
   const [companyName, setCompanyName] = useState('');
   const [driverName, setDriverName] = useState('');
   const [email, setEmail] = useState('');
@@ -27,6 +28,51 @@ const Form = () => {
   const qstRate = 0.09975;
   const earningsKm = parseInt(endKm) - parseInt(startKm);
   const earningsMiles = earningsKm * 0.621371;
+
+  useEffect(() => {
+    // Load data from AsyncStorage when the component mounts
+    loadData();
+  }, []);
+
+  const saveData = async () => {
+    try {
+      // Save data to AsyncStorage
+      await AsyncStorage.setItem('companyName', companyName);
+      await AsyncStorage.setItem('driverName', driverName);
+      await AsyncStorage.setItem('email', email);
+      await AsyncStorage.setItem('phone', phone);
+      await AsyncStorage.setItam('gstHstNumber', gstHstNumber);
+    } catch (error) {
+      console.error('Error saving data:', error);
+      Alert.alert('Error', 'Failed to save data. Please try again later.');
+    }
+  };
+
+  const loadData = async () => {
+    try {
+      // Load data from AsyncStorage
+      const savedCompanyName = await AsyncStorage.getItem('companyName');
+      const savedDriverName = await AsyncStorage.getItem('driverName');
+      const savedEmail = await AsyncStorage.getItem('email');
+      const savedPhone = await AsyncStorage.getItem('phone');
+      const savedGstHstNumber = await AsyncStorage.getItem('gstHstNumber');
+      // Update state with loaded data
+      setCompanyName(savedCompanyName || '');
+      setDriverName(savedDriverName || '');
+      setEmail(savedEmail || '');
+      setPhone(savedPhone || '');
+      setGstHstNumber(savedGstHstNumber || '');
+    } catch (error) {
+      console.error('Error loading data:', error);
+      Alert.alert('Error', 'Failed to load data. Please try again later.');
+    }
+  };
+
+  const handleSave = () => {
+    // Save data when the user clicks the save button
+    saveData();
+    // Optionally, navigate to another screen or perform other actions
+  };
 
   const addLocation = () => {
     setLocations([...locations, { deliverTo: '' }]);
@@ -222,7 +268,9 @@ const Form = () => {
           <Text style={styles.label}>Total Earnings: $</Text>
           <Text>{earningsData.total}</Text>
         </View>
+        <Button title="Save" onPress={handleSave} />
         <Button title="Generate PDF & Share" onPress={generatePDF} />
+        
       </View>
     </ScrollView>
   );

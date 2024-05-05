@@ -1,8 +1,3 @@
-//cd truck-track
-//npx expo start
-
-//expo updates automatic
-//https://docs.expo.dev/versions/latest/sdk/updates/
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -17,7 +12,6 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Form">
         <Stack.Screen name="Form" component={Form} />
-    
       </Stack.Navigator>
     </NavigationContainer>
   );

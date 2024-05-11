@@ -2,7 +2,7 @@
   "expo": {
     "name": "TruckTrack",
     "slug": "truck-track",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -10,6 +10,9 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
     "plugins": [
       [
@@ -37,14 +40,13 @@
       "eas": {
         "projectId": "152e57f4-8a9c-430f-b2c8-97412ee11a9f"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
-  },
+  ,
   "web": {
     "favicon": "./assets/favicon.png"
-  },
-  "extra": {
-    "eas": {
-      "projectId": "152e57f4-8a9c-430f-b2c8-97412ee11a9f"
-    }
   }
+}
 }

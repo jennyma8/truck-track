@@ -1,15 +1,9 @@
 import React, { useState, useEffect} from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 
-const Form = () => {
-  const [companyName, setCompanyName] = useState('');
-  const [driverName, setDriverName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [gstHstNumber, setGstHstNumber] = useState('');
+const Form = ({route}) => {
 
   const [layoverHours, setLayoverHours] = useState('');
   const [pickupDropCount, setPickupDropCount] = useState('');
@@ -29,51 +23,20 @@ const Form = () => {
   const earningsKm = parseInt(endKm) - parseInt(startKm);
   const earningsMiles = earningsKm * 0.621371;
 
-  useEffect(() => {
-    // Load data from AsyncStorage when the component mounts
-    loadData();
-  }, []);
+const { companyName, driverName, email, phone, gstHstNumber } = route.params || {};
 
-  const saveData = async () => {
-    try {
-      // Save data to AsyncStorage
-      await AsyncStorage.setItem('companyName', companyName);
-      await AsyncStorage.setItem('driverName', driverName);
-      await AsyncStorage.setItem('email', email);
-      await AsyncStorage.setItem('phone', phone);
-      await AsyncStorage.setItem('gstHstNumber', gstHstNumber);
-    } catch (error) {
-      console.error('Error saving data:', error);
-      Alert.alert('Error', 'Failed to save data. Please try again later.');
-    }
-  };
-
-  const loadData = async () => {
-    try {
-      // Load data from AsyncStorage
-      const savedCompanyName = await AsyncStorage.getItem('companyName');
-      const savedDriverName = await AsyncStorage.getItem('driverName');
-      const savedEmail = await AsyncStorage.getItem('email');
-      const savedPhone = await AsyncStorage.getItem('phone');
-      const savedGstHstNumber = await AsyncStorage.getItem('gstHstNumber');
-      // Update state with loaded data
-      setCompanyName(savedCompanyName || '');
-      setDriverName(savedDriverName || '');
-      setEmail(savedEmail || '');
-      setPhone(savedPhone || '');
-      setGstHstNumber(savedGstHstNumber || '');
-    } catch (error) {
-      console.error('Error loading data:', error);
-      Alert.alert('Error', 'Failed to load data. Please try again later.');
-    }
-  };
-
-  const handleSave = () => {
-    // Save data when the user clicks the save button
-    saveData();
-    // Optionally, navigate to another screen or perform other actions
-  };
-
+useEffect(() => {
+  // Update state with route params
+  setStartKm('');
+  setEndKm('');
+  setGpsMilesDriven('');
+  setLayoverHours('');
+  setPickupDropCount('');
+  setWaitingTimeHours('');
+  setLocations([{ deliverTo: '' }]);
+  setPickups([{ pickupFrom: '' }]);
+}, [route.params]);
+  
   const addLocation = () => {
     setLocations([...locations, { deliverTo: '' }]);
   };
@@ -148,41 +111,6 @@ const Form = () => {
     <ScrollView contentContainerStyle={styles.scrollContent}>
       <View style={styles.container}>
         <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Company Name"
-            value={companyName}
-            onChangeText={text => setCompanyName(text)}
-            
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Driver Name"
-            value={driverName}
-            onChangeText={text => setDriverName(text)}
-          
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={text => setEmail(text)}
-           
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Phone"
-            value={phone}
-            onChangeText={text => setPhone(text)}
-          
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="GST/HST #"
-            value={gstHstNumber}
-            onChangeText={text => setGstHstNumber(text)}
-        
-          />
           <Text>Vehicle odometer</Text>
           <TextInput
             style={styles.input}
@@ -257,20 +185,7 @@ const Form = () => {
             keyboardType="numeric"
           />
         </View>
-        <View style={styles.table}>
-          <Text style={styles.label}>Rate per Mile: $0.61</Text>
-          <Text style={styles.label}>Earnings: $</Text>
-          <Text>{earningsData.earnings}</Text>
-          <Text style={styles.label}>GST: $</Text>
-          <Text>{earningsData.gst}</Text>
-          <Text style={styles.label}>QST: $</Text>
-          <Text>{earningsData.qst}</Text>
-          <Text style={styles.label}>Total Earnings: $</Text>
-          <Text>{earningsData.total}</Text>
-        </View>
-        <Button title="Save" onPress={handleSave} />
         <Button title="Generate PDF & Share" onPress={generatePDF} />
-        
       </View>
     </ScrollView>
   );
